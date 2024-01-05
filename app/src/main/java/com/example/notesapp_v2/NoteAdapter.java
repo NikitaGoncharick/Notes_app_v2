@@ -18,14 +18,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
     public void setNotes(List<Note> notes){
         this.notes = notes;
-        notifyDataSetChanged(); // Уведомляем адаптер о том, что данные изменились
+         notifyDataSetChanged();//Этот вызов уведомляет RecyclerView, что данные изменились, и RecyclerView должен перерисовать себя, чтобы отобразить новые данные.
     }
 
     // Создание нового ViewHolder для каждого элемента списка
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false); //дизайн элементов списка прописан тут
         return new NoteViewHolder(itemView);
     }
 

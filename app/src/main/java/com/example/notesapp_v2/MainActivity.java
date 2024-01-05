@@ -64,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
         // и RecyclerView в вашем MainActivity обновляется соответственно.
 
         // НАБЛЮДЕНИЕ ЗА ИЗМЕНЕНИЯМИ В СПИСКЕ ЗАМЕТОК
+
+        // после срабатывания noteViewModel.insert(newNote); в onActivityResult система получит новые данные
         noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) { //Здесь вы подписываетесь на изменения в LiveData<List<Note>>. Каждый раз, когда данные в базе данных изменяются
                                                         // noteAdapter обновляется новым списком заметок.
-
                 noteAdapter.setNotes(notes); // Обновление адаптера новыми данными. Метод прописан в NoteAdapter
             }
         });
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     //---------------------------------------ПОЛУЧЕНИЕ ДАННЫХ из AddEditNoteActivity--------------------------------------------------
 
     //AddEditNoteActivity возвращает результат, проверяется код запроса (REQUEST_CODE_ADD_NOTE) и код результата (RESULT_OK).
@@ -98,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
             Note newNote = new Note(title, content);
             noteViewModel.insert(newNote); // Сохраняем заметку в базе данных
-
-            /*Note newNote = new Note(title, content);
-            noteViewModel.insert(newNote);*/
         }
         else {
             Log.d("FFFF", "EMPTY: ");
