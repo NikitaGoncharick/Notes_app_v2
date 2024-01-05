@@ -15,10 +15,10 @@ public class Note {
     @ColumnInfo(name = "date")
     private String date;
 
-    public Note(String title, String content, String date) {
+    public Note(String title, String content) {
         this.title = title;
         this.content = content;
-        this.date = date;
+        //this.date = date;
     }
 
     public int getId() {
