@@ -15,6 +15,7 @@ public class Note {
     @ColumnInfo(name = "date")
     private String date;
 
+
     public Note(String title, String content) {
         this.title = title;
         this.content = content;

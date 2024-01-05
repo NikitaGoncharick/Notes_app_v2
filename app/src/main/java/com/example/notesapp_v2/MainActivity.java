@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Note> notes) { //Здесь вы подписываетесь на изменения в LiveData<List<Note>>. Каждый раз, когда данные в базе данных изменяются
                                                         // noteAdapter обновляется новым списком заметок.
+                // Код, который выполнится при обновлении данных в LiveData
                 noteAdapter.setNotes(notes); // Обновление адаптера новыми данными. Метод прописан в NoteAdapter
             }
         });
