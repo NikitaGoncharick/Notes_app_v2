@@ -12,7 +12,8 @@ import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
     private List<Note> notes; // Список заметок
-    private OnNoteClickListener listener; //при создании ViewHolder, для каждого элемента списка, вы добавляете обработчик клика, который вызывает onNoteClick(note) этого слушателя.
+    private OnNoteClickListener listener; //то переменная, которая будет хранить ссылку на объект, реализующий интерфейс
+                                        //при создании ViewHolder, для каждого элемента списка, вы добавляете обработчик клика, который вызывает onNoteClick(note) этого слушателя.
     public NoteAdapter(List<Note> notes){ //Это используется для первоначального заполнения RecyclerView данными.
         this.notes = notes;
     }
@@ -41,13 +42,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     }
 
-    // Получение количества элементов в списке
     @Override
     public int getItemCount() {
         return notes.size();
     }
 
-    // Внутренний класс для ViewHolder
     public class NoteViewHolder extends RecyclerView.ViewHolder{
 
         private TextView noteTitleView;
@@ -61,17 +60,20 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             noteContentView = itemView.findViewById(R.id.note_content);
             noteDateView = itemView.findViewById(R.id.note_date);
 
-            // Установка обработчика клика на каждый элемент списка
-            //При клике определяется позиция элемента и, если слушатель кликов (listener) установлен, вызывается onNoteClick с заметкой на этой позиции.
-            itemView.setOnClickListener(new View.OnClickListener() {
+
+            //-------------------------------- ПЕРВОЕ ЧТО  ПРОСИХОДИТ ПРИ КЛИКЕ НА СУЩЕСТВУЮЩУЮ ЗАМЕТКУ!!----------------------------------------------
+            itemView.setOnClickListener(new View.OnClickListener() { // Встроенная функция установки обработчика клика на каждый элемент списка
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onNoteClick(notes.get(position));
+                    int position = getAdapterPosition(); // 1 - получили ПОЗИЦИЮ!
+                    if (listener != null && position != RecyclerView.NO_POSITION){ // проверка, установлен ли слушатель(ПО ДЕФЛТКУ У НАС-ДА) и является ли позиция действительной
+                        listener.onNoteClick(notes.get(position));// Этот вызов активирует метод onNoteClick, который был определен в MainActivity И ЧЕРЕЗ ИНТЕРФЕЙС
+                                                                //передан в адаптер, что бы его можно было тут непрописывая вызвать
                     }
+                    //При клике определяется позиция элемента в списке и, если слушатель кликов (listener) установлен, вызывается onNoteClick с заметкой на этой позиции.
                 }
             });
+            //-----------------------------------------------------------------------------------------------------------------------------------------
         }
         //Когда RecyclerView хочет отобразить заметку, он вызывает метод bind с объектом Note, который содержит данные заметки.
         // Метод для привязки данных заметки к элементам интерфейса
@@ -81,14 +83,22 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             noteDateView.setText(note.getDate());
         }
     }
-    // Установка слушателя кликов
-    public void setOnNoteClickListener(OnNoteClickListener listener){
-        this.listener = listener;
-    }
-
-    // Интерфейс для обработки кликов
-    // Объявив, получаем возможность делать обращение к обработчику из других классов
+    //------------------------------------------------------Интерфейс для обработки кликов-------------------------------------------------------------
     public interface OnNoteClickListener{
         void onNoteClick(Note note);
+        //Прописываем интерфейс, что бы MainActivity реализовала нам его логику, когда мы отдадим ей данные
     }
+
+    // Установка Обработчика Событий
+    public void setOnNoteClickListener(OnNoteClickListener listener){
+        this.listener = listener;
+        // ЭТО НЕ САМОСТОЯТЕЛЬНЫЙ БЛОК КОДА!!!!
+        // это по сути ссылка на объект, который "знает", как выполнить метод onNoteClick.
+        // ссылка образуется, когда при клике,setOnNoteClickListener, в классе main, обработает нажатие и передаст информацию о том что это он отвечат за реализацию
+
+        // и скажет адаптеру: "Вот реализация, которую я хочу, чтобы ты использовал для обработки кликов на элементы списка (listener)
+        // а listener, в свою очередь, это переменная которая хранит ссылку на объект, реализующий интерфейс onNoteClick в main.
+    }
+
+
 }

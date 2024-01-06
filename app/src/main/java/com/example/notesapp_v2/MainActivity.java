@@ -82,14 +82,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
             }
         });
-        //                          ОБРАБОТКА НАЖАТИЯ НА ЭЛЕМЕНТЫ RECYCLERVIEW
+        //-------------------------------------ОБРАБОТКА НАЖАТИЯ НА ЭЛЕМЕНТЫ RECYCLERVIEW------------------------------------------------------
         noteAdapter.setOnNoteClickListener(new NoteAdapter.OnNoteClickListener() {
+            //Определяем, что должно произойти, когда пользователь кликнул на элемент RecyclerView и мы уже получили позицию из списка для обработки
+
+            //  Этот код реализует onNoteClick прямо на месте, указывая, как именно должен быть реализован метод onNoteClick из интерфейса OnNoteClickListener вызванный в адаптере
+            //  Таким образом, мы прописываем реализацию интерфейса и выполняем реализацию клика по тем данным, что получили из адаптера
+            // (например, открыть AddEditNoteActivity для редактирования).
             @Override
             public void onNoteClick(Note note) {
                 Intent intent = new Intent(MainActivity.this,AddEditNoteActivity.class);
                 intent.putExtra(Note.EXTRA_ID, note.getId());
                 intent.putExtra(Note.EXTRA_TITLE, note.getTitle());
                 intent.putExtra(Note.EXTRA_CONTENT, note.getContent());
+
                 startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE);
                 // REQUEST_CODE_EDIT_NOTE - это ключ проверки, который будет отправлен в AddEditNoteActivity при срабатывании клика и сохранится в памяти
                 // после чего, когда в активити сработает finish() система вернет обратно этот сохраенный код проверки, провертит его в onActivityResult
