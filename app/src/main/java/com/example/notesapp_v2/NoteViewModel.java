@@ -11,10 +11,13 @@ import java.util.List;
 //----------------- NoteViewModel обеспечивает разделение бизнес-логики приложения от UI, повышая тестируемость, читаемость и поддерживаемость кода--------------//
 
 public class NoteViewModel extends AndroidViewModel {
-    private NoteRepository repository; // Представьте Repository как менеджера, который управляет всеми данными в вашем приложении.
-    // Он работает как посредник между источниками данных (например, базой данных, сетевыми запросами) и остальной частью приложения.
+    private NoteRepository repository;
+    // Представьте Repository как менеджера, который управляет всеми данными в вашем приложении.
+    // ViewModel использует Repository для выполнения операций с данными, таких как получение, добавление, обновление и удаление заметок.
+    // Эти операции организованы в методах ViewModel, которые вызывают соответствующие методы Repository.
     //ViewModel запрашивает данные у Repository, а Repository заботится о том, чтобы получить эти данные,
-    private LiveData<List<Note>> allNotes; // LiveData содержащая в себе данные из бд, данные автоматически обновятся в UI, когда произойдут изменения в бд
+    private LiveData<List<Note>> allNotes;
+    // LiveData содержащая в себе данные из бд, данные автоматически обновятся в UI, когда произойдут изменения в бд
     public NoteViewModel(@NonNull Application application) { // Конструктор ViewModel
         super(application);
 

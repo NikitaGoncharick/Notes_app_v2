@@ -6,6 +6,11 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "notes")
 public class Note {
+    // --------------------------------- КОНСТАНТЫ ДЛЯ ПЕРЕДАЧИ ЗНАЧЕНИЙ ВНУТРИ INTENT ПО ВСЕМУ ПРИЛОЖЕНИЮ --------------------
+    public static final String EXTRA_ID = "EXTRA_ID";
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_CONTENT = "EXTRA_CONTENT";
+    //--------------------------------- --------------------------------- ------------------------------------------------------
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "title")

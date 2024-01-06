@@ -32,19 +32,19 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     // Привязка данных заметки к ViewHolder
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note currentNote = notes.get(position);
-        holder.bind(currentNote);
+        Note currentNote = notes.get(position); // здесь currentNote становится заметкой, которая должна быть отображена в текущем ViewHolder.
+        // Эта строка кода не просто получает позицию элемента в списке. Она извлекает сам объект Note из списка notes, после чего он будет наполнен элементами из метода bind
+
+        holder.bind(currentNote); //После того как получена нужная заметка, вызывается метод bind на объекте NoteViewHolder.
+        //Внутри ViewHolder, метод bind принимает объект Note и использует его данные (например, заголовок и содержание заметки) для заполнения соответствующих виджетов
+        // в макете этого ViewHolder.
+
     }
 
     // Получение количества элементов в списке
     @Override
     public int getItemCount() {
         return notes.size();
-    }
-
-    // Установка слушателя кликов
-    public void setOnNoteClickListener(OnNoteClickListener listener){
-        this.listener = listener;
     }
 
     // Внутренний класс для ViewHolder
@@ -61,8 +61,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             noteContentView = itemView.findViewById(R.id.note_content);
             noteDateView = itemView.findViewById(R.id.note_date);
 
-
             // Установка обработчика клика на каждый элемент списка
+            //При клике определяется позиция элемента и, если слушатель кликов (listener) установлен, вызывается onNoteClick с заметкой на этой позиции.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -73,7 +73,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 }
             });
         }
-
         //Когда RecyclerView хочет отобразить заметку, он вызывает метод bind с объектом Note, который содержит данные заметки.
         // Метод для привязки данных заметки к элементам интерфейса
         public void bind(Note note){
@@ -82,6 +81,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             noteDateView.setText(note.getDate());
         }
     }
+    // Установка слушателя кликов
+    public void setOnNoteClickListener(OnNoteClickListener listener){
+        this.listener = listener;
+    }
+
+    // Интерфейс для обработки кликов
+    // Объявив, получаем возможность делать обращение к обработчику из других классов
     public interface OnNoteClickListener{
         void onNoteClick(Note note);
     }

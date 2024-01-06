@@ -37,6 +37,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_ADD_NOTE = 1; // Код запроса для добавления заметки
+    public static final int REQUEST_CODE_EDIT_NOTE = 2;
 
     private NoteViewModel noteViewModel;
     private RecyclerView recyclerView;
@@ -57,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         //-------------------------------------------------------MVVM + LiveData--------------------------------------------------------
 
-        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class); // Инициализация NoteViewModel
-
+        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class); // Инициализация NoteViewModel (Передача Repository  в ViewModel)
         // noteViewModel.getAllNotes() возвращает LiveData<List<Note>>. LiveData – это обертка, которая предоставляет данные так, чтобы MainActivity могла наблюдать за изменениями
         // в этих данных. Когда данные в базе данных изменяются, LiveData автоматически уведомляет об этих изменениях,
         // и RecyclerView в вашем MainActivity обновляется соответственно.
@@ -82,7 +82,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
             }
         });
+        //                          ОБРАБОТКА НАЖАТИЯ НА ЭЛЕМЕНТЫ RECYCLERVIEW
+        noteAdapter.setOnNoteClickListener(new NoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onNoteClick(Note note) {
+                Intent intent = new Intent(MainActivity.this,AddEditNoteActivity.class);
+                intent.putExtra(Note.EXTRA_ID, note.getId());
+                intent.putExtra(Note.EXTRA_TITLE, note.getTitle());
+                intent.putExtra(Note.EXTRA_CONTENT, note.getContent());
+                startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE);
+                // REQUEST_CODE_EDIT_NOTE - это ключ проверки, который будет отправлен в AddEditNoteActivity при срабатывании клика и сохранится в памяти
+                // после чего, когда в активити сработает finish() система вернет обратно этот сохраенный код проверки, провертит его в onActivityResult
+                // и в случае его возвращения выполнит действия.
+            }
+        });
     }
+
     //---------------------------------------ПОЛУЧЕНИЕ ДАННЫХ из AddEditNoteActivity--------------------------------------------------
 
     //AddEditNoteActivity возвращает результат, проверяется код запроса (REQUEST_CODE_ADD_NOTE) и код результата (RESULT_OK).
@@ -91,16 +106,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK && data != null){
-            String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
-            String content = data.getStringExtra(AddEditNoteActivity.EXTRA_CONTENT);
+        if (resultCode != RESULT_OK && data == null) {
+            Log.d("FFFF", "No data returned or bad result code");
+            return;
+        }
+        String title = data.getStringExtra(Note.EXTRA_TITLE);
+        String content = data.getStringExtra(Note.EXTRA_CONTENT);
 
-            Log.d("FFFF", "DATA: " + title + content); // проверка через лог пришли ли данные
+        Log.d("FFFF", "DATA: " + title + content); // проверка через лог пришли ли данные
 
+        if (requestCode == REQUEST_CODE_ADD_NOTE) {
+            // Добавление новой заметки
             Note newNote = new Note(title, content);
             noteViewModel.insert(newNote); // Сохраняем заметку в базе данных
-        }
-        else {
+
+        } else if (requestCode == REQUEST_CODE_EDIT_NOTE) {
+            // Обновление существующей заметки
+            int id = data.getIntExtra(Note.EXTRA_ID, -1);
+            if (id != -1) {
+                Note updateNote = new Note(title, content);
+                updateNote.setId(id);
+                noteViewModel.update(updateNote);
+            }
+        } else {
             Log.d("FFFF", "EMPTY: ");
         }
     }
